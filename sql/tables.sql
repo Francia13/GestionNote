@@ -13,7 +13,7 @@ CREATE TABLE correcteurs (
 
 CREATE TABLE operateur (
     id SERIAL PRIMARY KEY,
-    nom VARCHAR(1) NOT NULL
+    nom VARCHAR(2) NOT NULL
 );
 
 CREATE TABLE matieres (
@@ -42,9 +42,7 @@ CREATE TABLE notes (
     note NUMERIC(5,2) NOT NULL
 );
 
-
-
-CREATE VIEW notefinales AS
+CREATE OR REPLACE VIEW notefinales AS
 SELECT
     ROW_NUMBER() OVER() AS id,
     n.id_eleve,
@@ -53,33 +51,70 @@ SELECT
     m.nom AS nom_matiere,
 
     ROUND(
-    CASE
-        WHEN p.id IS NULL THEN AVG(n.note)
+        CASE
 
-        WHEN (
-            (o.nom = '>' AND diff.total_diff > p.valeur)
-            OR
-            (o.nom = '<' AND diff.total_diff < p.valeur)
-        )
+            WHEN EXISTS (
+                SELECT 1
+                FROM parametres p
+                JOIN operateur o ON o.id = p.id_operateur
+                WHERE p.id_matiere = n.id_matiere
+                AND (
+                        (o.nom = '>'  AND diff.total_diff >  p.valeur)
+                     OR (o.nom = '<'  AND diff.total_diff <  p.valeur)
+                     OR (o.nom = '>=' AND diff.total_diff >= p.valeur)
+                     OR (o.nom = '<=' AND diff.total_diff <= p.valeur)
+                )
+                AND p.id_regle = (
+                    SELECT id FROM regles WHERE nom = 'Petit'
+                )
+            )
 
-        THEN
-            CASE
-                WHEN r.nom = 'plus petit' THEN MIN(n.note)
-                WHEN r.nom = 'plus grand' THEN MAX(n.note)
-                ELSE AVG(n.note)
-            END
+            THEN MIN(n.note)
 
-        ELSE AVG(n.note)
+            WHEN EXISTS (
+                SELECT 1
+                FROM parametres p
+                JOIN operateur o ON o.id = p.id_operateur
+                WHERE p.id_matiere = n.id_matiere
+                AND (
+                        (o.nom = '>'  AND diff.total_diff >  p.valeur)
+                     OR (o.nom = '<'  AND diff.total_diff <  p.valeur)
+                     OR (o.nom = '>=' AND diff.total_diff >= p.valeur)
+                     OR (o.nom = '<=' AND diff.total_diff <= p.valeur)
+                )
+                AND p.id_regle = (
+                    SELECT id FROM regles WHERE nom = 'Grand'
+                )
+            )
 
-    END ,2) AS notefinale
+            THEN MAX(n.note)
+
+            WHEN EXISTS (
+                SELECT 1
+                FROM parametres p
+                JOIN operateur o ON o.id = p.id_operateur
+                WHERE p.id_matiere = n.id_matiere
+                AND (
+                        (o.nom = '>'  AND diff.total_diff >  p.valeur)
+                     OR (o.nom = '<'  AND diff.total_diff <  p.valeur)
+                     OR (o.nom = '>=' AND diff.total_diff >= p.valeur)
+                     OR (o.nom = '<=' AND diff.total_diff <= p.valeur)
+                )
+                AND p.id_regle = (
+                    SELECT id FROM regles WHERE nom = 'Moyenne'
+                )
+            )
+
+            THEN AVG(n.note)
+
+            ELSE AVG(n.note)
+
+        END
+    ,2) AS notefinale
 
 FROM notes n
 JOIN eleves e ON e.id = n.id_eleve
 JOIN matieres m ON m.id = n.id_matiere
-
-LEFT JOIN parametres p ON p.id_matiere = n.id_matiere
-LEFT JOIN operateur o ON o.id = p.id_operateur
-LEFT JOIN regles r ON r.id = p.id_regle
 
 LEFT JOIN (
     SELECT
@@ -103,8 +138,4 @@ GROUP BY
     e.nom,
     n.id_matiere,
     m.nom,
-    o.nom,
-    r.nom,
-    p.valeur,
-    p.id,
     diff.total_diff;

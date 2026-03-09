@@ -1,22 +1,21 @@
 INSERT INTO operateur (nom) VALUES
-('>'),
 ('<'),
-('>='),
-('<=');
+('<='),
+('>'),
+('>=');
 
 INSERT INTO regles (nom) VALUES
-('moyenne'),
-('plus petit'),
-('plus grand');
+('Petit'),
+('Grand'),
+('Moyenne');
 
 INSERT INTO matieres (nom) VALUES
-('Maths'),
-('Anglais');
+('JAVA'),
+('PHP');
 
 INSERT INTO eleves (nom) VALUES
-('Jean'),
-('Marie'),
-('Paul');
+('Candidat 1'),
+('Candidat 2');
 
 INSERT INTO correcteurs (nom) VALUES
 ('Correcteur 1'),
@@ -24,27 +23,21 @@ INSERT INTO correcteurs (nom) VALUES
 ('Correcteur 3');
 
 INSERT INTO parametres (id_matiere,id_regle,valeur,id_operateur) VALUES
-(1,2,3,3),
-(1,3,3,2),
-(2,3,3,2);
+(1,2,7,1),
+(1,3,7,4),
+(2,1,2,2),
+(2,2,2,3);
 
 INSERT INTO notes (id_eleve,id_correcteur,id_matiere,note) VALUES
-(1,1,1,10),
-(1,2,1,14),
-(1,3,1,15);
+(1,1,1,15),
+(1,2,1,10),
+(1,3,1,12),
+(1,1,2,10),
+(1,2,2,10);
 
 INSERT INTO notes (id_eleve,id_correcteur,id_matiere,note) VALUES
-(2,1,1,12),
-(2,2,1,13),
-(2,3,1,14);
-
-INSERT INTO notes (id_eleve,id_correcteur,id_matiere,note) VALUES
-(1,1,2,8),
-(1,2,2,9),
-(1,3,2,10);
-
-INSERT INTO notes (id_eleve,id_correcteur,id_matiere,note) VALUES
-(3,1,2,16),
-(3,2,2,17),
-(3,3,2,18);
-
+(2,1,1,9),
+(2,2,1,8),
+(2,3,1,11),
+(2,1,2,13),
+(2,2,2,11);
