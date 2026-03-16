@@ -1,0 +1,5 @@
+com\example\Main.class
+com\example\noteweb\repository\NoteFinaleRepository.class
+com\example\noteweb\NoteWebApplication.class
+com\example\noteweb\model\NoteFinale.class
+com\example\noteweb\controller\NoteFinaleController.class
