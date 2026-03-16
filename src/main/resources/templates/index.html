@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="main-container">
-        <h1 class="page-title">ETU3593 - Gestion des notes examen </h1>
+        <h1 class="page-title">ETU003640</h1>
 
         <div class="filter-section">
             <!-- <h2 class="filter-title">Recherche par Nom</h2> -->
@@ -31,17 +31,13 @@
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>Id</th>
                             <th>Eleve</th>
-                            <th>Matiere</th>
                             <th>Note finale</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr th:each="note : ${notes}">
-                            <td th:text="${note.id}"></td>
                             <td th:text="${note.nomEleve}"></td>
-                            <td th:text="${note.nomMatiere}"></td>
                             <td th:text="${note.noteFinale}"></td>
                         </tr>
                     </tbody>
